@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HANICRAFT CREATIVES LLP - Memento Cost Calculator</title>
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%2310b981'/><path d='M85,50 A35,35 0 1,1 50,15 A35,35 0 0,1 85,50 Z M50,28 L32,45 H48 V52 A8,8 0 1,0 64,52 Z' fill='%23090d16'/><circle cx='48' cy='42' r='4' fill='%2310b981'/></svg>">
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    input[type=number]::-webkit-inner-spin-button, 
+    input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+    input[type=number] { -moz-appearance: textfield; }
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: #090d16; }
+    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+  </style>
+</head>
+<body class="bg-[#090d16] text-slate-200 min-h-screen pb-12 antialiased">
+
+  <!-- TOP HEADER -->
+  <header class="border-b border-slate-800/80 bg-[#090d16]/90 backdrop-blur sticky top-0 z-30">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <a href="https://hanicraft.in/" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2.5 group">
+          <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-500/20 to-emerald-900/30 border border-emerald-500/30 flex items-center justify-center shadow-lg shadow-emerald-950/40 group-hover:border-emerald-400 transition">
+            <svg class="w-6 h-6 text-emerald-400" viewBox="0 0 100 100" fill="currentColor">
+              <rect width="100" height="100" rx="20" fill="#10b981"/>
+              <path d="M85,50 A35,35 0 1,1 50,15 A35,35 0 0,1 85,50 Z M50,28 L32,45 H48 V52 A8,8 0 1,0 64,52 Z" fill="#090d16"/>
+              <circle cx="48" cy="42" r="4" fill="#10b981"/>
+            </svg>
+          </div>
+          <div>
+            <h1 class="text-sm font-bold text-slate-100 tracking-tight flex items-center group-hover:text-emerald-400 transition">
+              <span class="font-bold text-white tracking-normal">hanicraft</span>
+            </h1>
+            <p class="text-[10px] uppercase tracking-widest text-emerald-400 font-semibold -mt-1">Creatives LLP</p>
+          </div>
+        </a>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button onclick="resetCalculator()" class="px-3 py-1.5 text-xs font-medium text-slate-400 hover:text-slate-200 transition">
+          ↺ Reset
+        </button>
+        <button onclick="openSettingsDrawer()" class="w-9 h-9 bg-emerald-600/20 text-emerald-300 hover:bg-emerald-600/30 rounded-xl transition border border-emerald-500/30 flex items-center justify-center shadow-sm" title="Master Settings">
+          <span class="text-base">⚙️</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-4 py-6 space-y-6">
+    
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      
+      <!-- LEFT CONTENT AREA -->
+      <div class="lg:col-span-7 space-y-5">
+        
+        <!-- SECTION 1: PROJECT & CUSTOMER INFO -->
+        <section class="bg-slate-900/40 border border-slate-800/60 rounded-xl p-4 space-y-3">
+          <h2 class="text-xs font-semibold text-emerald-400 uppercase tracking-wider">Project & Customer</h2>
+          
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-[11px] text-slate-400 mb-1">Customer Name</label>
+              <input type="text" id="customerName" placeholder="Client Name" oninput="saveAndRecalculate()" class="w-full bg-[#090d16] border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-emerald-500/50 transition">
+            </div>
+            <div>
+              <label class="block text-[11px] text-slate-400 mb-1">Memento / Item Title</label>
+              <input type="text" id="mementoTitle" value="Custom Wooden & Acrylic Memento" oninput="saveAndRecalculate()" class="w-full bg-[#090d16] border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-emerald-500/50 transition">
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3 pt-1">
+            <div>
+              <label class="block text-[11px] text-slate-400 mb-1">Batch Qty (Pcs)</label>
+              <input type="number" id="batchQty" value="1" min="1" oninput="saveAndRecalculate()" class="w-full bg-[#090d16] border border-slate-800 rounded-lg px-3 py-2 text-xs font-bold text-emerald-400 focus:outline-none focus:border-emerald-500/50 transition">
+            </div>
+            <div>
+              <label class="block text-[11px] text-slate-400 mb-1">Profit Slab Applied</label>
+              <div id="profitSlabBadge" class="w-full bg-[#090d16] border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-300 font-semibold flex items-center justify-between">
+                <span>200%</span>
+                <span class="text-[10px] text-emerald-400 font-medium">1-2 Pcs</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 2: MATERIAL LAYERS -->
+        <section class="bg-slate-900/40 border border-slate-800/60 rounded-xl p-4 space-y-3">
+          <div class="flex items-center justify-between">
+            <h2 class="text-xs font-semibold text-emerald-400 uppercase tracking-wider">Material Layers</h2>
+            <button onclick="addLayer()" class="text-xs font-semibold text-emerald-400 hover:text-emerald-300 transition">+ Add Layer</button>
+          </div>
+          
+          <div id="layersContainer" class="space-y-3">
+            <!-- Layers render dynamically -->
+          </div>
+        </section>
+
+        <!-- SECTION 3: MACHINING & OPERATIONAL COSTS -->
+        <section class="bg-slate-900/40 border border-slate-800/60 rounded-xl p-4 space-y-4">
+          <h2 class="text-xs font-semibold text-emerald-400 uppercase tracking-wider">Machining & Operational Costs</h2>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <!-- CNC -->
+            <div class="bg-[#090d16] p-3 rounded-lg border border-slate-800/80 space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="text-[11px] font-medium text-slate-300">CNC Cutting (₹)</span>
+                <span id="cncAutoTag" onclick="resetOverride('costCNC')" class="text-[9px] font-bold text-emerald-400 bg-emerald-950/80 px-1.5 py-0.5 rounded cursor-pointer border border-emerald-800/50">AUTO</span>
+              </div>
+              <input type="number" id="costCNC" oninput="onManualOverride('costCNC')" class="w-full bg-slate-900 border border-slate-800 rounded px-2.5 py-1 text-xs text-white">
+              <label class="flex items-center gap-1.5 text-[10px] text-slate-400 cursor-pointer pt-0.5">
+                <input type="checkbox" id="cncUseSheetPrice" checked onchange="saveAndRecalculate()" class="rounded text-emerald-500 bg-slate-900 border-slate-700">
+                <span>Use Sheet Cut Rate</span>
+              </label>
+            </div>
+
+            <!-- LASER -->
+            <div class="bg-[#090d16] p-3 rounded-lg border border-slate-800/80 space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="text-[11px] font-medium text-slate-300">Laser Cutting (₹)</span>
+                <span id="laserAutoTag" onclick="resetOverride('costLaser')" class="text-[9px] font-bold text-emerald-400 bg-emerald-950/80 px-1.5 py-0.5 rounded cursor-pointer border border-emerald-800/50">AUTO</span>
+              </div>
+              <input type="number" id="costLaser" oninput="onManualOverride('costLaser')" class="w-full bg-slate-900 border border-slate-800 rounded px-2.5 py-1 text-xs text-white">
+              <label class="flex items-center gap-1.5 text-[10px] text-slate-400 cursor-pointer pt-0.5">
+                <input type="checkbox" id="laserUseSheetPrice" checked onchange="saveAndRecalculate()" class="rounded text-emerald-500 bg-slate-900 border-slate-700">
+                <span>Use Sheet Cut Rate</span>
+              </label>
+            </div>
+
+            <!-- PAINT / POLISH -->
+            <div class="bg-[#090d16] p-3 rounded-lg border border-slate-800/80 space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="text-[11px] font-medium text-slate-300">Paint / Polish (₹)</span>
+                <span id="paintAutoTag" onclick="resetOverride('costPaint')" class="text-[9px] font-bold text-emerald-400 bg-emerald-950/80 px-1.5 py-0.5 rounded cursor-pointer border border-emerald-800/50">AUTO</span>
+              </div>
+              <input type="number" id="costPaint" oninput="onManualOverride('costPaint')" class="w-full bg-slate-900 border border-slate-800 rounded px-2.5 py-1 text-xs text-white">
+              <label class="flex items-center gap-1.5 text-[10px] text-slate-400 cursor-pointer pt-0.5">
+                <input type="checkbox" id="paintUseSheetPrice" checked onchange="saveAndRecalculate()" class="rounded text-emerald-500 bg-slate-900 border-slate-700">
+                <span>Use Sheet Polish Rate</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-3 gap-3 pt-1">
+            <div>
+              <label class="block text-[11px] text-slate-400 mb-1">Print / UV (₹)</label>
+              <input type="number" id="costPrint" value="0" oninput="saveAndRecalculate()" class="w-full bg-[#090d16] border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-200">
+            </div>
+            <div>
+              <label class="block text-[11px] text-slate-400 mb-1">Packing Box (₹)</label>
+              <input type="number" id="costPacking" value="50" oninput="saveAndRecalculate()" class="w-full bg-[#090d16] border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-200">
+            </div>
+            <div>
+              <label class="block text-[11px] text-slate-400 mb-1">Design Fee (₹)</label>
+              <input type="number" id="costDesign" value="100" oninput="saveAndRecalculate()" class="w-full bg-[#090d16] border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-200">
+            </div>
+          </div>
+        </section>
+
+      </div>
+
+      <!-- RIGHT SUMMARY PANEL -->
+      <div class="lg:col-span-5">
+        <div class="bg-slate-900/60 border border-slate-800/80 rounded-xl p-5 sticky top-20 space-y-5">
+          <h2 class="text-xs font-semibold text-slate-400 uppercase tracking-wider border-b border-slate-800/80 pb-2.5">Quotation Breakdown</h2>
+
+          <div class="space-y-2 text-xs">
+            <div class="flex justify-between text-slate-400">
+              <span>Material Total:</span>
+              <span id="summaryMaterialCost" class="font-medium text-slate-200">₹0</span>
+            </div>
+            <div class="flex justify-between text-slate-400">
+              <span>CNC & Laser Cutting:</span>
+              <span id="summaryServicesCost" class="font-medium text-slate-200">₹0</span>
+            </div>
+            <div class="flex justify-between text-slate-400">
+              <span>Polish / Coating Cost:</span>
+              <span id="summaryPolishCost" class="font-medium text-slate-200">₹0</span>
+            </div>
+            <div class="flex justify-between text-slate-400">
+              <span>Overheads & Printing:</span>
+              <span id="summaryOverheadsCost" class="font-medium text-slate-200">₹0</span>
+            </div>
+            <div class="flex justify-between text-slate-400">
+              <span>Assembly Charge (<span id="summaryAssemblyRateTag">₹0/pc</span>):</span>
+              <span id="summaryAssemblyCost" class="font-medium text-emerald-400">₹0</span>
+            </div>
+            <div class="border-t border-slate-800/80 pt-2 flex justify-between text-slate-300 font-semibold text-xs">
+              <span>Production Cost (Batch):</span>
+              <span id="summaryTotalProductionCost" class="text-slate-100">₹0</span>
+            </div>
+          </div>
+
+          <div class="bg-[#090d16] p-4 rounded-xl border border-slate-800/80 space-y-3">
+            <div class="flex justify-between text-xs text-slate-400">
+              <span>Profit Margin (<span id="summaryProfitPercent">0%</span>):</span>
+              <span id="summaryProfitAmount" class="text-emerald-400 font-medium">₹0</span>
+            </div>
+            <div class="border-t border-slate-800 pt-2 flex justify-between items-baseline">
+              <span class="text-xs text-slate-300 font-semibold">Final Batch Total:</span>
+              <span id="summaryFinalBatchPrice" class="text-xl font-bold text-emerald-400">₹0</span>
+            </div>
+            <div class="flex justify-between text-xs text-slate-400 pt-1">
+              <span>Unit Price:</span>
+              <span id="summaryFinalUnitPrice" class="text-slate-200 font-bold">₹0 / pc</span>
+            </div>
+          </div>
+
+          <div class="space-y-2">
+            <button onclick="promptWhatsAppRecipient()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-2.5 px-4 rounded-lg text-xs transition flex items-center justify-center gap-2 shadow-lg shadow-emerald-900/20">
+              <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-1.143 4.174 4.187-1.096z"/></svg>
+              <span>Send WhatsApp Quote</span>
+            </button>
+            <button onclick="window.print()" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium py-2 px-4 rounded-lg text-xs transition border border-slate-700/60">
+              Print / Save PDF
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- WHATSAPP MODAL -->
+  <div id="whatsappModal" class="fixed inset-0 bg-[#090d16]/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 w-full max-w-sm space-y-4 shadow-2xl">
+      <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+        <h3 class="text-xs font-semibold text-slate-200">Send WhatsApp Quote</h3>
+        <button onclick="closeWhatsAppModal()" class="text-slate-500 hover:text-slate-300 text-xs">✕</button>
+      </div>
+      <div>
+        <label class="block text-[11px] text-slate-400 mb-1">Customer Phone Number</label>
+        <div class="flex gap-2">
+          <input type="text" id="waCountryCode" value="+91" class="w-14 bg-[#090d16] border border-slate-800 rounded-lg px-2 py-1.5 text-xs text-center text-slate-300">
+          <input type="tel" id="waPhoneNumber" placeholder="9876543210" class="flex-1 bg-[#090d16] border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-white">
+        </div>
+      </div>
+      <div class="flex justify-end gap-2 pt-1">
+        <button onclick="closeWhatsAppModal()" class="px-3 py-1.5 bg-slate-800 text-slate-300 font-medium rounded-lg text-xs">Cancel</button>
+        <button onclick="confirmSendWhatsApp()" class="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-lg text-xs">Send</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SETTINGS DRAWER OVERLAY -->
+  <div id="settingsDrawerOverlay" onclick="closeSettingsDrawer()" class="fixed inset-0 bg-[#090d16]/80 backdrop-blur-sm z-50 hidden transition-opacity duration-300"></div>
+  
+  <aside id="settingsDrawer" class="fixed right-0 top-0 h-full w-full max-w-lg bg-slate-900 border-l border-slate-800 shadow-2xl z-50 transform translate-x-full transition-transform duration-300 flex flex-col">
+    <div class="p-4 border-b border-slate-800 flex justify-between items-center bg-slate-950/40">
+      <h2 class="text-xs font-bold text-slate-200 uppercase tracking-wider">Master Rates & Settings</h2>
+      <button onclick="closeSettingsDrawer()" class="text-slate-400 hover:text-white text-xs">✕ Close</button>
+    </div>
+
+    <!-- TABS NAVIGATION -->
+    <div class="flex border-b border-slate-800 text-xs font-medium bg-slate-900/80 overflow-x-auto">
+      <button onclick="switchTab('ratesTab')" id="btn-ratesTab" class="flex-1 py-2.5 px-3 border-b-2 border-emerald-400 text-emerald-400 text-center whitespace-nowrap">Sheet Rates</button>
+      <button onclick="switchTab('polishTab')" id="btn-polishTab" class="flex-1 py-2.5 px-3 border-b-2 border-transparent text-slate-400 text-center whitespace-nowrap">Polish Rates</button>
+      <button onclick="switchTab('assemblyTab')" id="btn-assemblyTab" class="flex-1 py-2.5 px-3 border-b-2 border-transparent text-slate-400 text-center whitespace-nowrap">Assembly Rates</button>
+      <button onclick="switchTab('customMatTab')" id="btn-customMatTab" class="flex-1 py-2.5 px-3 border-b-2 border-transparent text-slate-400 text-center whitespace-nowrap">+ Material</button>
+      <button onclick="switchTab('slabsTab')" id="btn-slabsTab" class="flex-1 py-2.5 px-3 border-b-2 border-transparent text-slate-400 text-center whitespace-nowrap">Profit Slabs</button>
+    </div>
+
+    <div class="p-4 overflow-y-auto flex-1 space-y-4 text-xs">
+      
+      <!-- TAB 1: SHEET & CUTTING RATES -->
+      <div id="tabContent-ratesTab" class="space-y-4">
+        <p class="text-[11px] text-slate-400">Edit full sheet price, sheet cutting rate, and thickness per material:</p>
+        <div id="materialRatesContainer" class="space-y-3"></div>
+      </div>
+
+      <!-- TAB 2: POLISH TYPES (8x4 Sheet Rates) -->
+      <div id="tabContent-polishTab" class="hidden space-y-3">
+        <p class="text-[11px] text-slate-400">Set full 8×4 ft sheet coating/polish rates for each finish:</p>
+        <div id="polishRatesContainer" class="space-y-2"></div>
+      </div>
+
+      <!-- TAB 3: ASSEMBLY / LABOR SLABS -->
+      <div id="tabContent-assemblyTab" class="hidden space-y-3">
+        <p class="text-[11px] text-slate-400">Set assembly labor rate per memento based on unit production cost:</p>
+        <div id="assemblySlabsContainer" class="space-y-2"></div>
+      </div>
+
+      <!-- TAB 4: CUSTOM MATERIAL CATEGORY -->
+      <div id="tabContent-customMatTab" class="hidden space-y-3">
+        <div class="bg-[#090d16] p-3.5 rounded-lg border border-slate-800 space-y-3">
+          <h3 class="font-semibold text-slate-200 text-xs">Add New Material & Sub-Category</h3>
+          <input type="text" id="customMatCategory" placeholder="Category Name (e.g. Teak Wood)" class="w-full bg-slate-900 border border-slate-700 rounded px-2.5 py-1.5 text-xs text-white">
+          <input type="text" id="customMatSubCategory" placeholder="Sub-Category / Brand (e.g. Premium)" class="w-full bg-slate-900 border border-slate-700 rounded px-2.5 py-1.5 text-xs text-white">
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block text-[10px] text-slate-400 mb-0.5">Sheet Width (in)</label>
+              <input type="number" id="customMatWidth" value="96" class="w-full bg-slate-900 border border-slate-700 rounded px-2 py-1 text-xs text-white">
+            </div>
+            <div>
+              <label class="block text-[10px] text-slate-400 mb-0.5">Sheet Height (in)</label>
+              <input type="number" id="customMatHeight" value="48" class="w-full bg-slate-900 border border-slate-700 rounded px-2 py-1 text-xs text-white">
+            </div>
+          </div>
+          <div class="grid grid-cols-3 gap-2">
+            <div>
+              <label class="block text-[10px] text-slate-400 mb-0.5">Thick (mm)</label>
+              <input type="number" id="customMatThick" value="6" class="w-full bg-slate-900 border border-slate-700 rounded px-2 py-1 text-xs text-white">
+            </div>
+            <div>
+              <label class="block text-[10px] text-slate-400 mb-0.5">Sheet Price (₹)</label>
+              <input type="number" id="customMatPrice" placeholder="Price" class="w-full bg-slate-900 border border-slate-700 rounded px-2.5 py-1 text-xs text-white">
+            </div>
+            <div>
+              <label class="block text-[10px] text-slate-400 mb-0.5">Cut Rate (₹)</label>
+              <input type="number" id="customMatCutRate" placeholder="Cut Price" class="w-full bg-slate-900 border border-slate-700 rounded px-2.5 py-1 text-xs text-white">
+            </div>
+          </div>
+          <button onclick="addNewCustomMaterialCategory()" class="w-full bg-emerald-600 hover:bg-emerald-500 font-semibold text-white py-1.5 rounded text-xs transition">Save Custom Material</button>
+        </div>
+      </div>
+
+      <!-- TAB 5: PROFIT SLABS EDITING -->
+      <div id="tabContent-slabsTab" class="hidden space-y-3">
+        <p class="text-[11px] text-slate-400">Edit batch quantity thresholds & profit slab margins:</p>
+        <div id="profitSlabsContainer" class="space-y-2"></div>
+      </div>
+
+    </div>
+
+    <!-- BOTTOM DRAWER ACTIONS (INCLUDING IMPORT & EXPORT) -->
+    <div class="p-4 border-t border-slate-800 space-y-2 bg-slate-950/60">
+      <div class="grid grid-cols-2 gap-2">
+        <button onclick="exportSettings()" class="w-full px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-emerald-400 font-semibold text-xs rounded-lg transition border border-emerald-500/30 flex items-center justify-center gap-1.5">
+          <span>📥</span> Export Settings
+        </button>
+        <label class="w-full px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold text-xs rounded-lg transition border border-slate-700 flex items-center justify-center gap-1.5 cursor-pointer">
+          <span>📤</span> Import Settings
+          <input type="file" id="importFileInput" accept=".json" onchange="importSettings(event)" class="hidden">
+        </label>
+      </div>
+      <div class="flex justify-between gap-2 pt-1">
+        <button onclick="resetMasterDefaults()" class="px-3 py-1.5 bg-slate-800 text-slate-300 hover:text-white text-xs rounded-lg transition border border-slate-700">Restore Defaults</button>
+        <button onclick="saveMasterSettings()" class="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs rounded-lg transition shadow-lg shadow-emerald-950">Save Master Rates</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- JS LOGIC ENGINE -->
+  <script>
+    const DEFAULT_SHEET_PRICES = {
+      'MDF': { width: 96, height: 48, subCategory: 'Standard Grade', rates: { 5: 698, 8: 858, 12: 1311, 18: 1872, 25: 3142 }, cutRates: { 5: 1500, 8: 1800, 12: 2200, 18: 2600, 25: 3200 } },
+      'Multiwood': { width: 96, height: 48, subCategory: 'Waterproof PVC', rates: { 5: 2053, 8: 2782, 12: 4107 }, cutRates: { 5: 1600, 8: 2000, 12: 2500 } },
+      'Rubwood': { width: 96, height: 48, subCategory: 'Laminated Solid', rates: { 12: 4083, 18: 4577 }, cutRates: { 12: 2500, 18: 3000 } },
+      'Natural Wood': { width: 96, height: 48, subCategory: 'Hardwood Solid', rates: { 12: 4600, 18: 5520, 25: 5980 }, cutRates: { 12: 2800, 18: 3500, 25: 4200 } },
+      'Acrylic Indian': { width: 48, height: 36, subCategory: 'Cast Sheet', rates: { 2: 518, 3: 679, 4: 1024 }, cutRates: { 2: 800, 3: 1000, 4: 1200 } },
+      'Acrylic Imported': { width: 96, height: 48, subCategory: 'Laser Grade', rates: { 1: 2185, 2: 2875, 3: 3864, 4: 5152, 5: 6440, 8: 10304, 10: 12880, 12: 15456 }, cutRates: { 1: 1200, 2: 1500, 3: 1800, 4: 2200, 5: 2500, 8: 3200, 10: 3800, 12: 4500 } }
+    };
+
+    const DEFAULT_POLISH_TYPES = {
+      'Sealer and Papering': { sheetRate: 1200 },
+      'Redbrown': { sheetRate: 1600 },
+      'Teak': { sheetRate: 1800 },
+      'Sealer and Spray': { sheetRate: 2000 },
+      'Black': { sheetRate: 1700 }
+    };
+
+    const DEFAULT_PROFIT_SLABS = [
+      { maxQty: 2, pct: 200, label: "1-2 Pcs" },
+      { maxQty: 5, pct: 150, label: "3-5 Pcs" },
+      { maxQty: 10, pct: 100, label: "6-10 Pcs" },
+      { maxQty: 20, pct: 70, label: "11-20 Pcs" },
+      { maxQty: 50, pct: 50, label: "21-50 Pcs" },
+      { maxQty: 100, pct: 40, label: "51-100 Pcs" },
+      { maxQty: 999999, pct: 30, label: ">100 Pcs" }
+    ];
+
+    const DEFAULT_ASSEMBLY_SLABS = [
+      { maxPrice: 100, rate: 15 },
+      { maxPrice: 500, rate: 25 },
+      { maxPrice: 1000, rate: 35 },
+      { maxPrice: 2000, rate: 50 },
+      { maxPrice: 3000, rate: 70 },
+      { maxPrice: 5000, rate: 100 },
+      { maxPrice: 999999, rate: 250 }
+    ];
+
+    const DEFAULT_MACHINING_RATES = { cncBaseRate: 0.45, laserBaseRate: 0.35, paintBaseRate: 0.25, floorCNC: 300, floorLaser: 200, floorPaint: 250 };
+
+    let SHEET_PRICES = JSON.parse(JSON.stringify(DEFAULT_SHEET_PRICES));
+    let POLISH_TYPES = JSON.parse(JSON.stringify(DEFAULT_POLISH_TYPES));
+    let PROFIT_SLABS = JSON.parse(JSON.stringify(DEFAULT_PROFIT_SLABS));
+    let ASSEMBLY_SLABS = JSON.parse(JSON.stringify(DEFAULT_ASSEMBLY_SLABS));
+    let MACHINING_RATES = JSON.parse(JSON.stringify(DEFAULT_MACHINING_RATES));
+    let isManualOverride = { costCNC: false, costLaser: false, costPaint: false };
+
+    let state = {
+      customerName: '',
+      title: 'Custom Wooden & Acrylic Memento',
+      qty: 1,
+      costPrint: 0, costPacking: 50, costDesign: 100, costCNC: 0, costLaser: 0, costPaint: 0,
+      layers: [
+        { id: 1, name: 'Wood Base Backing', material: 'MDF', thickness: 12, width: 8, height: 10, paint: true, polishType: 'Sealer and Papering' },
+        { id: 2, name: 'Acrylic Front Frame', material: 'Acrylic Indian', thickness: 3, width: 6, height: 8, paint: false, polishType: 'Sealer and Papering' }
+      ]
+    };
+
+    function getAssemblyRatePerPiece(baseUnitPrice) {
+      for (let i = 0; i < ASSEMBLY_SLABS.length; i++) {
+        if (baseUnitPrice <= ASSEMBLY_SLABS[i].maxPrice) {
+          return ASSEMBLY_SLABS[i].rate;
+        }
+      }
+      return 250;
+    }
+
+    window.onload = function() {
+      const savedMaster = localStorage.getItem('hanicraft_master_settings');
+      if (savedMaster) {
+        try {
+          const parsed = JSON.parse(savedMaster);
+          if (parsed.SHEET_PRICES) SHEET_PRICES = parsed.SHEET_PRICES;
+          if (parsed.POLISH_TYPES) POLISH_TYPES = parsed.POLISH_TYPES;
+          if (parsed.PROFIT_SLABS) PROFIT_SLABS = parsed.PROFIT_SLABS;
+          if (parsed.ASSEMBLY_SLABS) ASSEMBLY_SLABS = parsed.ASSEMBLY_SLABS;
+          if (parsed.MACHINING_RATES) MACHINING_RATES = parsed.MACHINING_RATES;
+        } catch(e){}
+      }
+
+      const savedState = localStorage.getItem('hanicraft_memento_state');
+      if (savedState) {
+        try { const parsedState = JSON.parse(savedState); if (parsedState) state = parsedState; } catch(e){}
+      }
+
+      renderUI();
+      saveAndRecalculate();
+    };
+
+    function renderUI() {
+      document.getElementById('customerName').value = state.customerName || '';
+      document.getElementById('mementoTitle').value = state.title || 'Custom Wooden & Acrylic Memento';
+      document.getElementById('batchQty').value = state.qty || 1;
+      document.getElementById('costPrint').value = state.costPrint || 0;
+      document.getElementById('costPacking').value = state.costPacking ?? 50;
+      document.getElementById('costDesign').value = state.costDesign ?? 100;
+      renderLayers();
+    }
+
+    function renderLayers() {
+      const container = document.getElementById('layersContainer');
+      container.innerHTML = '';
+
+      state.layers.forEach((layer, idx) => {
+        const matInfo = SHEET_PRICES[layer.material] || { rates: {}, cutRates: {} };
+        if (!matInfo.cutRates) matInfo.cutRates = {};
+        const availableThicknesses = Object.keys(matInfo.rates);
+
+        const div = document.createElement('div');
+        div.className = "bg-[#090d16] border border-slate-800/80 rounded-lg p-3 space-y-2.5";
+        div.innerHTML = `
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] font-bold text-slate-400 uppercase">Layer #${idx + 1} (${matInfo.subCategory || ''})</span>
+            <button onclick="removeLayer(${layer.id})" class="text-[11px] text-rose-400 hover:text-rose-300 font-medium">✕ Delete</button>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+            <input type="text" value="${layer.name || ''}" placeholder="Layer Title" oninput="updateLayer(${layer.id}, 'name', this.value, false)" class="bg-slate-900 border border-slate-800 rounded px-2.5 py-1 text-xs text-slate-100">
+            <select onchange="updateLayer(${layer.id}, 'material', this.value, true)" class="bg-slate-900 border border-slate-800 rounded px-2.5 py-1 text-xs text-slate-100">
+              ${Object.keys(SHEET_PRICES).map(m => `<option value="${m}" ${layer.material === m ? 'selected':''}>${m} (${SHEET_PRICES[m].subCategory || ''})</option>`).join('')}
+            </select>
+            <select onchange="updateLayer(${layer.id}, 'thickness', parseFloat(this.value), true)" class="bg-slate-900 border border-slate-800 rounded px-2.5 py-1 text-xs text-slate-100">
+              ${availableThicknesses.map(t => `<option value="${t}" ${layer.thickness == t ? 'selected':''}>${t} mm</option>`).join('')}
+            </select>
+          </div>
+
+          <div class="grid grid-cols-3 gap-2 items-center">
+            <input type="number" step="0.1" value="${layer.width}" placeholder="Width (in)" oninput="updateLayer(${layer.id}, 'width', parseFloat(this.value)||0, false)" class="bg-slate-900 border border-slate-800 rounded px-2.5 py-1 text-xs text-slate-200">
+            <input type="number" step="0.1" value="${layer.height}" placeholder="Height (in)" oninput="updateLayer(${layer.id}, 'height', parseFloat(this.value)||0, false)" class="bg-slate-900 border border-slate-800 rounded px-2.5 py-1 text-xs text-slate-200">
+            <label class="flex items-center gap-1.5 cursor-pointer text-xs text-slate-400">
+              <input type="checkbox" ${layer.paint ? 'checked':''} onchange="updateLayer(${layer.id}, 'paint', this.checked, true)" class="rounded text-emerald-500 bg-slate-900 border-slate-700">
+              <span>Paint/Polish</span>
+            </label>
+          </div>
+
+          ${layer.paint ? `
+            <div class="flex items-center gap-2 pt-1 border-t border-slate-800/60">
+              <span class="text-[10px] text-slate-400 font-medium">Polish Type:</span>
+              <select onchange="updateLayer(${layer.id}, 'polishType', this.value, true)" class="flex-1 bg-slate-900 border border-slate-800 rounded px-2 py-1 text-xs text-emerald-300">
+                ${Object.keys(POLISH_TYPES).map(pt => `<option value="${pt}" ${layer.polishType === pt ? 'selected':''}>${pt} (₹${POLISH_TYPES[pt].sheetRate}/sheet)</option>`).join('')}
+              </select>
+            </div>
+          ` : ''}
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function addLayer() {
+      state.layers.push({ id: Date.now(), name: 'Layer Item', material: 'MDF', thickness: 6, width: 6, height: 6, paint: true, polishType: 'Sealer and Papering' });
+      renderLayers();
+      saveAndRecalculate();
+    }
+
+    function removeLayer(id) {
+      if (state.layers.length <= 1) return;
+      state.layers = state.layers.filter(l => l.id !== id);
+      renderLayers();
+      saveAndRecalculate();
+    }
+
+    function updateLayer(id, key, val, shouldReRender = false) {
+      const layer = state.layers.find(l => l.id === id);
+      if (layer) {
+        layer[key] = val;
+        if (key === 'material') {
+          const availableRates = SHEET_PRICES[val]?.rates || {};
+          const keys = Object.keys(availableRates);
+          if (keys.length > 0 && !availableRates[layer.thickness]) layer.thickness = parseFloat(keys[0]);
+        }
+        if (shouldReRender) {
+          renderLayers();
+        }
+        saveAndRecalculate();
+      }
+    }
+
+    function onManualOverride(field) {
+      isManualOverride[field] = true;
+      const tag = document.getElementById(field === 'costCNC' ? 'cncAutoTag' : field === 'costLaser' ? 'laserAutoTag' : 'paintAutoTag');
+      if (tag) tag.textContent = 'MANUAL';
+      saveAndRecalculate();
+    }
+
+    function resetOverride(field) {
+      isManualOverride[field] = false;
+      const tag = document.getElementById(field === 'costCNC' ? 'cncAutoTag' : field === 'costLaser' ? 'laserAutoTag' : 'paintAutoTag');
+      if (tag) tag.textContent = 'AUTO';
+      saveAndRecalculate();
+    }
+
+    function saveAndRecalculate() {
+      state.customerName = document.getElementById('customerName').value;
+      state.title = document.getElementById('mementoTitle').value;
+      state.qty = parseInt(document.getElementById('batchQty').value) || 1;
+      state.costPrint = parseFloat(document.getElementById('costPrint').value) || 0;
+      state.costPacking = parseFloat(document.getElementById('costPacking').value) || 0;
+      state.costDesign = parseFloat(document.getElementById('costDesign').value) || 0;
+
+      const qty = state.qty;
+      let totalMaterialCost = 0, calculatedCNC = 0, calculatedLaser = 0, calculatedPaint = 0;
+      let hasWood = false, hasAcrylic = false, hasPaint = false;
+
+      const cncUseSheetPrice = document.getElementById('cncUseSheetPrice')?.checked;
+      const laserUseSheetPrice = document.getElementById('laserUseSheetPrice')?.checked;
+      const paintUseSheetPrice = document.getElementById('paintUseSheetPrice')?.checked;
+
+      state.layers.forEach(l => {
+        const mat = SHEET_PRICES[l.material];
+        if (mat) {
+          if (!mat.cutRates) mat.cutRates = {};
+          const sheetArea = (mat.width || 96) * (mat.height || 48);
+          const pieceArea = (l.width || 0) * (l.height || 0);
+          const sheetPrice = mat.rates[l.thickness] || 0;
+          const sheetCutPrice = mat.cutRates[l.thickness] || 1500;
+
+          const costPerPiece = (pieceArea / sheetArea) * sheetPrice;
+          const cutCostPerPiece = (pieceArea / sheetArea) * sheetCutPrice;
+
+          totalMaterialCost += costPerPiece * qty;
+          const isWood = ['MDF', 'Multiwood', 'Rubwood', 'Natural Wood'].includes(l.material) || l.material.toLowerCase().includes('wood');
+          const isAcrylic = ['Acrylic Indian', 'Acrylic Imported'].includes(l.material) || l.material.toLowerCase().includes('acrylic');
+          const perimeter = 2 * ((l.width || 0) + (l.height || 0));
+
+          if (isWood || (!isWood && !isAcrylic)) {
+            hasWood = true;
+            calculatedCNC += cncUseSheetPrice ? (cutCostPerPiece * qty) : ((perimeter * MACHINING_RATES.cncBaseRate * (1 + ((l.thickness || 6) / 20))) * qty);
+          }
+          if (isAcrylic) {
+            hasAcrylic = true;
+            calculatedLaser += laserUseSheetPrice ? (cutCostPerPiece * qty) : ((perimeter * MACHINING_RATES.laserBaseRate * (1 + ((l.thickness || 3) / 10))) * qty);
+          }
+          if (l.paint && (isWood || !isAcrylic)) {
+            hasPaint = true;
+            const polishInfo = POLISH_TYPES[l.polishType] || POLISH_TYPES['Sealer and Papering'];
+            const polishSheetPrice = polishInfo ? polishInfo.sheetRate : 1200;
+            const polishCostPerPiece = (pieceArea / (96 * 48)) * polishSheetPrice;
+
+            calculatedPaint += paintUseSheetPrice ? (polishCostPerPiece * qty) : ((pieceArea * MACHINING_RATES.paintBaseRate) * qty);
+          }
+        }
+      });
+
+      if (qty <= 2) {
+        if (hasWood && !cncUseSheetPrice) calculatedCNC = Math.max(MACHINING_RATES.floorCNC, calculatedCNC);
+        if (hasAcrylic && !laserUseSheetPrice) calculatedLaser = Math.max(MACHINING_RATES.floorLaser, calculatedLaser);
+        if (hasPaint && !paintUseSheetPrice) calculatedPaint = Math.max(MACHINING_RATES.floorPaint, calculatedPaint);
+      }
+
+      if (!isManualOverride.costCNC) document.getElementById('costCNC').value = Math.round(calculatedCNC);
+      if (!isManualOverride.costLaser) document.getElementById('costLaser').value = Math.round(calculatedLaser);
+      if (!isManualOverride.costPaint) document.getElementById('costPaint').value = Math.round(calculatedPaint);
+
+      const cncCost = parseFloat(document.getElementById('costCNC').value) || 0;
+      const laserCost = parseFloat(document.getElementById('costLaser').value) || 0;
+      const paintCost = parseFloat(document.getElementById('costPaint').value) || 0;
+
+      const servicesCost = cncCost + laserCost;
+      const overheadsCost = state.costPrint + state.costPacking + state.costDesign;
+
+      const baseProductionCostNoAssembly = totalMaterialCost + servicesCost + paintCost + overheadsCost;
+      const baseUnitPriceNoAssembly = baseProductionCostNoAssembly / qty;
+
+      const assemblyRatePerPc = getAssemblyRatePerPiece(baseUnitPriceNoAssembly);
+      const totalAssemblyCost = assemblyRatePerPc * qty;
+
+      const totalProductionCost = baseProductionCostNoAssembly + totalAssemblyCost;
+
+      let matchedSlab = PROFIT_SLABS.find(s => qty <= s.maxQty) || PROFIT_SLABS[PROFIT_SLABS.length - 1];
+      let profitPct = (matchedSlab ? matchedSlab.pct : 30) / 100;
+
+      document.getElementById('profitSlabBadge').innerHTML = `
+        <span>${profitPct * 100}%</span>
+        <span class="text-[10px] text-emerald-400 font-medium">${matchedSlab ? matchedSlab.label : ''}</span>
+      `;
+
+      const totalProfit = totalProductionCost * profitPct;
+      const finalBatchPrice = totalProductionCost + totalProfit;
+      const finalUnitPrice = finalBatchPrice / qty;
+
+      document.getElementById('summaryMaterialCost').textContent = `₹${Math.round(totalMaterialCost).toLocaleString()}`;
+      document.getElementById('summaryServicesCost').textContent = `₹${Math.round(servicesCost).toLocaleString()}`;
+      document.getElementById('summaryPolishCost').textContent = `₹${Math.round(paintCost).toLocaleString()}`;
+      document.getElementById('summaryOverheadsCost').textContent = `₹${Math.round(overheadsCost).toLocaleString()}`;
+      document.getElementById('summaryAssemblyRateTag').textContent = `₹${assemblyRatePerPc}/pc`;
+      document.getElementById('summaryAssemblyCost').textContent = `₹${Math.round(totalAssemblyCost).toLocaleString()}`;
+      document.getElementById('summaryTotalProductionCost').textContent = `₹${Math.round(totalProductionCost).toLocaleString()}`;
+
+      document.getElementById('summaryProfitPercent').textContent = `${profitPct * 100}%`;
+      document.getElementById('summaryProfitAmount').textContent = `₹${Math.round(totalProfit).toLocaleString()}`;
+      document.getElementById('summaryFinalBatchPrice').textContent = `₹${Math.round(finalBatchPrice).toLocaleString()}`;
+      document.getElementById('summaryFinalUnitPrice').textContent = `₹${Math.round(finalUnitPrice).toLocaleString()} / pc`;
+
+      localStorage.setItem('hanicraft_memento_state', JSON.stringify(state));
+    }
+
+    function openSettingsDrawer() {
+      renderMasterSettings();
+      renderPolishSettings();
+      renderAssemblySettings();
+      renderProfitSlabsSettings();
+      document.getElementById('settingsDrawerOverlay').classList.remove('hidden');
+      document.getElementById('settingsDrawer').classList.remove('translate-x-full');
+    }
+
+    function closeSettingsDrawer() {
+      document.getElementById('settingsDrawerOverlay').classList.add('hidden');
+      document.getElementById('settingsDrawer').classList.add('translate-x-full');
+    }
+
+    function switchTab(tabId) {
+      ['ratesTab', 'polishTab', 'assemblyTab', 'customMatTab', 'slabsTab'].forEach(t => {
+        document.getElementById(`tabContent-${t}`).classList.add('hidden');
+        document.getElementById(`btn-${t}`).classList.remove('border-emerald-400', 'text-emerald-400');
+        document.getElementById(`btn-${t}`).classList.add('border-transparent', 'text-slate-400');
+      });
+      document.getElementById(`tabContent-${tabId}`).classList.remove('hidden');
+      document.getElementById(`btn-${tabId}`).classList.add('border-emerald-400', 'text-emerald-400');
+    }
+
+    function renderMasterSettings() {
+      const matContainer = document.getElementById('materialRatesContainer');
+      matContainer.innerHTML = '';
+
+      Object.keys(SHEET_PRICES).forEach(matName => {
+        const mat = SHEET_PRICES[matName];
+        if (!mat.cutRates) mat.cutRates = {};
+
+        const card = document.createElement('div');
+        card.className = "bg-[#090d16] p-3 rounded-lg border border-slate-800 space-y-2";
+        
+        let ratesHTML = '';
+        Object.keys(mat.rates).forEach(th => {
+          const cutVal = mat.cutRates[th] || 1500;
+          ratesHTML += `
+            <div class="grid grid-cols-12 gap-2 items-center text-xs py-1 border-b border-slate-800/40">
+              <span class="col-span-3 text-slate-300 font-medium">${th} mm</span>
+              <div class="col-span-4 flex items-center gap-1">
+                <span class="text-[10px] text-slate-500">Sheet: ₹</span>
+                <input type="number" id="mat_${matName}_${th}" value="${mat.rates[th]}" class="w-full bg-slate-900 border border-slate-700 rounded px-1.5 py-0.5 text-right text-white">
+              </div>
+              <div class="col-span-4 flex items-center gap-1">
+                <span class="text-[10px] text-slate-500">Cut: ₹</span>
+                <input type="number" id="cut_${matName}_${th}" value="${cutVal}" class="w-full bg-slate-900 border border-slate-700 rounded px-1.5 py-0.5 text-right text-emerald-400">
+              </div>
+              <div class="col-span-1 flex justify-end">
+                <button onclick="removeThicknessFromMaterial('${matName}', '${th}')" title="Delete Thickness" class="text-rose-400 hover:text-rose-300 text-xs px-1 font-bold">✕</button>
+              </div>
+            </div>
+          `;
+        });
+
+        ratesHTML += `
+          <div class="pt-2 flex gap-2 items-center">
+            <input type="number" id="newThick_${matName}" placeholder="New mm" class="w-20 bg-slate-900 border border-slate-700 rounded px-2 py-1 text-xs text-white">
+            <input type="number" id="newThickPrice_${matName}" placeholder="Sheet Price" class="flex-1 bg-slate-900 border border-slate-700 rounded px-2 py-1 text-xs text-white">
+            <button onclick="addThicknessToMaterial('${matName}')" class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded text-xs">+</button>
+          </div>
+        `;
+
+        card.innerHTML = `
+          <div class="flex justify-between items-center border-b border-slate-800 pb-1">
+            <span class="font-bold text-slate-200 text-xs">${matName} <span class="text-[10px] text-slate-400 font-normal">(${mat.subCategory || ''})</span></span>
+            <span class="text-[10px] text-slate-400">(${mat.width}" × ${mat.height}")</span>
+          </div>
+          <div class="space-y-1">${ratesHTML}</div>
+        `;
+        matContainer.appendChild(card);
+      });
+    }
+
+    function removeThicknessFromMaterial(matName, thickness) {
+      if (SHEET_PRICES[matName] && SHEET_PRICES[matName].rates) {
+        if (Object.keys(SHEET_PRICES[matName].rates).length <= 1) return;
+        delete SHEET_PRICES[matName].rates[thickness];
+        if (SHEET_PRICES[matName].cutRates) delete SHEET_PRICES[matName].cutRates[thickness];
+        renderMasterSettings();
+        renderLayers();
+        saveAndRecalculate();
+      }
+    }
+
+    function addThicknessToMaterial(matName) {
+      const thInput = document.getElementById(`newThick_${matName}`);
+      const priceInput = document.getElementById(`newThickPrice_${matName}`);
+      const th = parseFloat(thInput?.value);
+      const price = parseFloat(priceInput?.value);
+
+      if (th && price && SHEET_PRICES[matName]) {
+        SHEET_PRICES[matName].rates[th] = price;
+        SHEET_PRICES[matName].cutRates[th] = 1500;
+        renderMasterSettings();
+        renderLayers();
+        saveAndRecalculate();
+      }
+    }
+
+    function renderPolishSettings() {
+      const container = document.getElementById('polishRatesContainer');
+      container.innerHTML = '';
+
+      Object.keys(POLISH_TYPES).forEach(ptName => {
+        const pt = POLISH_TYPES[ptName];
+        const div = document.createElement('div');
+        div.className = "bg-[#090d16] p-2.5 rounded-lg border border-slate-800 flex items-center justify-between text-xs gap-2";
+        div.innerHTML = `
+          <span class="text-slate-300 font-medium">${ptName}</span>
+          <div class="flex items-center gap-1">
+            <span class="text-[10px] text-slate-500">8×4 Sheet Rate: ₹</span>
+            <input type="number" id="polish_rate_${ptName.replace(/\s+/g, '_')}" value="${pt.sheetRate}" class="w-24 bg-slate-900 border border-slate-700 rounded px-2 py-1 text-right text-emerald-400 font-semibold">
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function renderAssemblySettings() {
+      const container = document.getElementById('assemblySlabsContainer');
+      container.innerHTML = '';
+
+      ASSEMBLY_SLABS.forEach((slab, i) => {
+        const div = document.createElement('div');
+        div.className = "bg-[#090d16] p-2.5 rounded-lg border border-slate-800 flex items-center justify-between text-xs gap-2";
+        div.innerHTML = `
+          <span class="text-slate-300 font-medium text-[11px]">Up to ₹${slab.maxPrice} cost</span>
+          <div class="flex items-center gap-1">
+            <span class="text-[10px] text-slate-500">Assembly Rate: ₹</span>
+            <input type="number" id="assembly_rate_${i}" value="${slab.rate}" class="w-20 bg-slate-900 border border-slate-700 rounded px-2 py-1 text-right text-emerald-400 font-semibold">
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function renderProfitSlabsSettings() {
+      const container = document.getElementById('profitSlabsContainer');
+      container.innerHTML = '';
+
+      PROFIT_SLABS.forEach((slab, i) => {
+        const div = document.createElement('div');
+        div.className = "bg-[#090d16] p-2.5 rounded-lg border border-slate-800 flex items-center justify-between text-xs gap-2";
+        div.innerHTML = `
+          <span class="text-slate-300 font-medium w-20">${slab.label}</span>
+          <div class="flex items-center gap-1">
+            <span class="text-[10px] text-slate-500">Max Qty:</span>
+            <input type="number" id="slab_max_${i}" value="${slab.maxQty}" class="w-16 bg-slate-900 border border-slate-700 rounded px-1.5 py-0.5 text-right text-white">
+          </div>
+          <div class="flex items-center gap-1">
+            <span class="text-[10px] text-slate-500">Margin:</span>
+            <input type="number" id="slab_pct_${i}" value="${slab.pct}" class="w-14 bg-slate-900 border border-slate-700 rounded px-1.5 py-0.5 text-right text-emerald-400">%
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function saveMasterSettings() {
+      Object.keys(SHEET_PRICES).forEach(matName => {
+        const mat = SHEET_PRICES[matName];
+        if (!mat.cutRates) mat.cutRates = {};
+        Object.keys(mat.rates).forEach(th => {
+          const matElem = document.getElementById(`mat_${matName}_${th}`);
+          const cutElem = document.getElementById(`cut_${matName}_${th}`);
+          if (matElem) mat.rates[th] = parseFloat(matElem.value) || 0;
+          if (cutElem) mat.cutRates[th] = parseFloat(cutElem.value) || 0;
+        });
+      });
+
+      Object.keys(POLISH_TYPES).forEach(ptName => {
+        const elem = document.getElementById(`polish_rate_${ptName.replace(/\s+/g, '_')}`);
+        if (elem) POLISH_TYPES[ptName].sheetRate = parseFloat(elem.value) || 0;
+      });
+
+      ASSEMBLY_SLABS.forEach((slab, i) => {
+        const elem = document.getElementById(`assembly_rate_${i}`);
+        if (elem) slab.rate = parseFloat(elem.value) || 0;
+      });
+
+      PROFIT_SLABS.forEach((slab, i) => {
+        const maxElem = document.getElementById(`slab_max_${i}`);
+        const pctElem = document.getElementById(`slab_pct_${i}`);
+        if (maxElem) slab.maxQty = parseInt(maxElem.value) || slab.maxQty;
+        if (pctElem) slab.pct = parseFloat(pctElem.value) || slab.pct;
+      });
+
+      localStorage.setItem('hanicraft_master_settings', JSON.stringify({ SHEET_PRICES, POLISH_TYPES, PROFIT_SLABS, ASSEMBLY_SLABS, MACHINING_RATES }));
+      closeSettingsDrawer();
+      renderLayers();
+      saveAndRecalculate();
+    }
+
+    function exportSettings() {
+      const dataToExport = {
+        SHEET_PRICES,
+        POLISH_TYPES,
+        PROFIT_SLABS,
+        ASSEMBLY_SLABS,
+        MACHINING_RATES,
+        exportDate: new Date().toISOString()
+      };
+      
+      const blob = new Blob([JSON.stringify(dataToExport, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Hanicraft_Master_Settings_${new Date().toISOString().slice(0,10)}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    function importSettings(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const imported = JSON.parse(e.target.result);
+          if (imported.SHEET_PRICES) SHEET_PRICES = imported.SHEET_PRICES;
+          if (imported.POLISH_TYPES) POLISH_TYPES = imported.POLISH_TYPES;
+          if (imported.PROFIT_SLABS) PROFIT_SLABS = imported.PROFIT_SLABS;
+          if (imported.ASSEMBLY_SLABS) ASSEMBLY_SLABS = imported.ASSEMBLY_SLABS;
+          if (imported.MACHINING_RATES) MACHINING_RATES = imported.MACHINING_RATES;
+
+          localStorage.setItem('hanicraft_master_settings', JSON.stringify({ SHEET_PRICES, POLISH_TYPES, PROFIT_SLABS, ASSEMBLY_SLABS, MACHINING_RATES }));
+          
+          renderMasterSettings();
+          renderPolishSettings();
+          renderAssemblySettings();
+          renderProfitSlabsSettings();
+          renderLayers();
+          saveAndRecalculate();
+
+          alert('Settings imported successfully!');
+        } catch (err) {
+          alert('Invalid JSON file format. Please upload a valid Hanicraft settings file.');
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function addNewCustomMaterialCategory() {
+      const cat = document.getElementById('customMatCategory').value.trim();
+      const subCat = document.getElementById('customMatSubCategory').value.trim();
+      const w = parseFloat(document.getElementById('customMatWidth').value) || 96;
+      const h = parseFloat(document.getElementById('customMatHeight').value) || 48;
+      const th = parseFloat(document.getElementById('customMatThick').value) || 6;
+      const price = parseFloat(document.getElementById('customMatPrice').value) || 0;
+      const cutRate = parseFloat(document.getElementById('customMatCutRate').value) || 1500;
+
+      if (!cat) return;
+
+      if (!SHEET_PRICES[cat]) {
+        SHEET_PRICES[cat] = { width: w, height: h, subCategory: subCat || 'Custom', rates: {}, cutRates: {} };
+      }
+      SHEET_PRICES[cat].rates[th] = price;
+      SHEET_PRICES[cat].cutRates[th] = cutRate;
+      if (subCat) SHEET_PRICES[cat].subCategory = subCat;
+
+      saveMasterSettings();
+      switchTab('ratesTab');
+    }
+
+    function resetMasterDefaults() {
+      SHEET_PRICES = JSON.parse(JSON.stringify(DEFAULT_SHEET_PRICES));
+      POLISH_TYPES = JSON.parse(JSON.stringify(DEFAULT_POLISH_TYPES));
+      PROFIT_SLABS = JSON.parse(JSON.stringify(DEFAULT_PROFIT_SLABS));
+      ASSEMBLY_SLABS = JSON.parse(JSON.stringify(DEFAULT_ASSEMBLY_SLABS));
+      MACHINING_RATES = JSON.parse(JSON.stringify(DEFAULT_MACHINING_RATES));
+      localStorage.removeItem('hanicraft_master_settings');
+      renderMasterSettings();
+      renderPolishSettings();
+      renderAssemblySettings();
+      renderProfitSlabsSettings();
+      renderLayers();
+      saveAndRecalculate();
+    }
+
+    function resetCalculator() {
+      localStorage.removeItem('hanicraft_memento_state');
+      location.reload();
+    }
+
+    function promptWhatsAppRecipient() {
+      document.getElementById('whatsappModal').classList.remove('hidden');
+    }
+
+    function closeWhatsAppModal() {
+      document.getElementById('whatsappModal').classList.hidden;
+    }
+
+    function confirmSendWhatsApp() {
+      const code = document.getElementById('waCountryCode').value.trim();
+      let phone = document.getElementById('waPhoneNumber').value.trim().replace(/\D/g, '');
+      closeWhatsAppModal();
+
+      const customer = document.getElementById('customerName').value;
+      const title = document.getElementById('mementoTitle').value;
+      const qty = parseInt(document.getElementById('batchQty').value) || 1;
+      const finalBatch = document.getElementById('summaryFinalBatchPrice').textContent;
+      const finalUnit = document.getElementById('summaryFinalUnitPrice').textContent;
+
+      let msg = `*HANICRAFT CREATIVES LLP*\n`;
+      msg += `*Quotation Summary*\n\n`;
+      if (customer) msg += `👤 *Customer:* ${customer}\n`;
+      msg += `📌 *Item:* ${title}\n`;
+      msg += `📦 *Quantity:* ${qty} Pcs\n`;
+      msg += `💰 *Unit Price:* ${finalUnit}\n`;
+      msg += `💵 *Total Amount:* ${finalBatch}\n\n`;
+      msg += `Thank you for choosing Hanicraft Creatives!`;
+
+      const encoded = encodeURIComponent(msg);
+      if (phone) {
+        window.open(`https://api.whatsapp.com/send?phone=${code.replace('+', '') + phone}&text=${encoded}`, '_blank');
+      } else {
+        window.open(`https://api.whatsapp.com/send?text=${encoded}`, '_blank');
+      }
+    }
+  </script>
+</body>
+</html>
